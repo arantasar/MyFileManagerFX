@@ -33,15 +33,6 @@ public class Main extends Application {
 
         // TESTS
 
-        FileSystem fileSystem = FileSystems.getDefault();
-        Path path = Paths.get("C://Python27");
-
-        try {
-            DirectoryStream<Path> paths = Files.newDirectoryStream(path);
-            paths.forEach(p -> System.out.println(p.getFileName()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
 
         // TESTS END

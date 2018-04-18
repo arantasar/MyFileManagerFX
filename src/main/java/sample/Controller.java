@@ -5,27 +5,32 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Controller implements Initializable {
 
-    DirectoryStream<Path> ds;
-    ObservableList<Path> files = FXCollections.observableArrayList();
-    Path c = Paths.get("C:\\Python27");
+    private DirectoryStream<Path> ds;
 
+    private ObservableList<Path> filesRight = FXCollections.observableArrayList();
+    private ObservableList<Path> filesLeft = FXCollections.observableArrayList();
 
+    private Path currentLeft = Paths.get("C:\\");
+    private Path currentRight = Paths.get("C:\\");
+
+    @FXML
+    private Label labelRight;
+
+    @FXML
+    private Label labelLeft;
 
     @FXML
     private ListView<Path> leftPane;
@@ -54,23 +59,94 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        if(c.getParent() != null) {
-            files.add(c.relativize(c.getParent()));
+        defaultLeft();
+        defaultRight();
+
+    }
+
+    private void defaultLeft() {
+        currentLeft = Paths.get("C:\\");
+        labelLeft.setText(currentLeft.toString());
+        showDir(currentLeft, Pane.LEFT);
+        leftPane.setItems(filesLeft);
+    }
+
+    private void defaultRight() {
+        currentRight = Paths.get("C:\\");
+        labelRight.setText(currentRight.toString());
+        showDir(currentRight, Pane.RIGHT);
+        rightPane.setItems(filesRight);
+    }
+
+    private void showDir(Path dir, Pane pane) {
+
+        switch (pane) {
+
+            case LEFT:
+
+                updateLeft(dir);
+
+                break;
+
+            case RIGHT:
+
+                updateRight(dir);
+
+                break;
         }
 
+    }
+
+    private void updateRight(Path dir) {
         try {
-            ds = Files.newDirectoryStream(c);
-            ds.forEach(path -> {
-                files.add(path.getFileName());
+            filesRight.clear();
+
+            ds = Files.newDirectoryStream(dir);
+            ds.forEach(p -> {
+                filesRight.add(p);
             });
-        } catch (IOException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+
+            labelRight.setText(dir.toString());
+            currentRight = dir;
+
+        } catch (AccessDeniedException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("Access denied!");
+            alert.showAndWait();
+
+            defaultRight();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        leftPane.setItems(files);
-        rightPane.setItems(files);
 
+    }
 
+    private void updateLeft(Path dir) {
+        try {
+            filesLeft.clear();
+
+            ds = Files.newDirectoryStream(dir);
+            ds.forEach(p -> {
+                filesLeft.add(p);
+            });
+
+        } catch (AccessDeniedException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("Access denied!");
+            alert.showAndWait();
+
+            defaultLeft();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        labelLeft.setText(dir.toString());
+        currentLeft = dir;
     }
 
     public void move(ActionEvent actionEvent) {
@@ -93,14 +169,40 @@ public class Controller implements Initializable {
     }
 
     public void stepIntoRight(MouseEvent mouseEvent) {
-        if(mouseEvent.getClickCount() == 2) {
-            System.out.println(rightPane.getSelectionModel().getSelectedItem());
+
+        if (mouseEvent.getClickCount() == 2) {
+
+            Path selectedPath = rightPane.getSelectionModel().getSelectedItem();
+
+            if (Files.isDirectory(selectedPath)) {
+                showDir(selectedPath, Pane.RIGHT);
+            }
         }
     }
 
     public void stepIntoLeft(MouseEvent mouseEvent) {
-        if(mouseEvent.getClickCount() == 2) {
-            System.out.println(leftPane.getSelectionModel().getSelectedItem());
+
+        if (mouseEvent.getClickCount() == 2) {
+
+            Path selectedPath = leftPane.getSelectionModel().getSelectedItem();
+
+            if (Files.isDirectory(selectedPath)) {
+                showDir(selectedPath, Pane.LEFT);
+            }
+        }
+    }
+
+    public void goUpLeft(ActionEvent actionEvent) {
+
+        if (currentLeft.getParent() != null) {
+            showDir(currentLeft.getParent(), Pane.LEFT);
+        }
+    }
+
+    public void goUpRight(ActionEvent actionEvent) {
+
+        if (currentRight.getParent() != null) {
+            showDir(currentRight.getParent(), Pane.RIGHT);
         }
     }
 }

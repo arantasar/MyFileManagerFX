@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import org.springframework.util.FileSystemUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.*;
@@ -84,6 +85,28 @@ public class Controller implements Initializable {
 
     public void move(ActionEvent actionEvent) {
 
+        Path source = currentPane.getSelectionModel().getSelectedItem();
+        Path target = currentSide == Side.LEFT ? Paths.get(labelRight.getText()) : Paths.get(labelLeft.getText());
+        target = Paths.get(target.toString(), "\\");
+
+        if (currentLabel.toString() != target.toString()) {
+            try {
+                FileSystemUtils.copyRecursively(source, Paths.get(target.toString(),
+                        source.getFileName().toString()));
+                FileSystemUtils.deleteRecursively(source);
+                update(source.getParent());
+                setCurrent(currentSide == Side.LEFT ? Side.RIGHT : Side.RIGHT);
+                update(target);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setHeaderText(null);
+            alert.setContentText("This is the same location!");
+            alert.show();
+        }
+
 
 
     }
@@ -153,21 +176,48 @@ public class Controller implements Initializable {
 
     public void delete(ActionEvent actionEvent) {
 
-        Path directoryPath = currentPane.getSelectionModel().getSelectedItem();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText(null);
+        alert.setContentText("Do you really want to delete this item ?");
 
-        try {
-            FileSystemUtils.deleteRecursively(directoryPath);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == ButtonType.OK) {
+
+            Path directoryPath = currentPane.getSelectionModel().getSelectedItem();
+
+            try {
+                FileSystemUtils.deleteRecursively(directoryPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            update(directoryPath.getParent());
         }
 
-        update(directoryPath.getParent());
     }
 
     public void copy(ActionEvent actionEvent) {
 
+        Path source = currentPane.getSelectionModel().getSelectedItem();
+        Path target = currentSide == Side.LEFT ? Paths.get(labelRight.getText()) : Paths.get(labelLeft.getText());
+        target = Paths.get(target.toString(), "\\");
 
-
+        if (currentLabel.toString() != target.toString()) {
+            try {
+                FileSystemUtils.copyRecursively(source, Paths.get(target.toString(),
+                        source.getFileName().toString()));
+                setCurrent(currentSide == Side.LEFT ? Side.RIGHT : Side.RIGHT);
+                update(target);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setHeaderText(null);
+            alert.setContentText("This is the same location!");
+            alert.show();
+        }
     }
 
     public void stepIntoRight(MouseEvent mouseEvent) {
@@ -195,7 +245,8 @@ public class Controller implements Initializable {
         if (Files.isDirectory(selectedPath)) {
             update(selectedPath);
         } else {
-            // OTWARCIE PLIKU
+
+            // TODO: 29.04.2018 otwieranie plików 
         }
     }
 

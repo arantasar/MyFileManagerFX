@@ -24,11 +24,11 @@
             <BorderPane.margin>
                 <Insets bottom="10.0"/>
             </BorderPane.margin>
-            <Button fx:id="btnMove" mnemonicParsing="false" onAction="#move" text="Move"/>
-            <Button fx:id="btnCopy" mnemonicParsing="false" onAction="#copy" text="Copy"/>
-            <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#delete" text="Delete"/>
-            <Button fx:id="btnNewFile" mnemonicParsing="false" onAction="#newFile" text="New File"/>
-            <Button fx:id="btnNewFolder" mnemonicParsing="false" onAction="#newFolder" text="New Folder"/>
+            <Button mnemonicParsing="false" onAction="#move" text="Move"/>
+            <Button mnemonicParsing="false" onAction="#copy" text="Copy"/>
+            <Button mnemonicParsing="false" onAction="#delete" text="Delete"/>
+            <Button mnemonicParsing="false" onAction="#newFile" text="New File"/>
+            <Button mnemonicParsing="false" onAction="#newFolder" text="New Folder"/>
         </HBox>
     </bottom>
     <top>

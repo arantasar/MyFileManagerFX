@@ -9,22 +9,17 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import org.springframework.util.FileSystemUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.*;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
-    private DirectoryStream<Path> ds;
-
-    private ObservableList<Path> filesRight = FXCollections.observableArrayList();
-    private ObservableList<Path> filesLeft = FXCollections.observableArrayList();
-
-    private Path pathLeft = Paths.get("C:\\");
-    private Path pathRight = Paths.get("C:\\");
+    private final ObservableList<Path> filesRight = FXCollections.observableArrayList();
+    private final ObservableList<Path> filesLeft = FXCollections.observableArrayList();
 
     private Side currentSide;
     private Label currentLabel;
@@ -63,7 +58,7 @@ public class Controller implements Initializable {
         try {
             currentFiles.clear();
 
-            ds = Files.newDirectoryStream(dir);
+            DirectoryStream<Path> ds = Files.newDirectoryStream(dir);
             ds.forEach(p -> currentFiles.add(p));
 
             currentPane.setItems(currentFiles);
@@ -89,7 +84,7 @@ public class Controller implements Initializable {
         Path target = currentSide == Side.LEFT ? Paths.get(labelRight.getText()) : Paths.get(labelLeft.getText());
         target = Paths.get(target.toString(), "\\");
 
-        if (currentLabel.toString() != target.toString()) {
+        if (!Objects.equals(currentLabel.toString(), target.toString())) {
             try {
                 FileSystemUtils.copyRecursively(source, Paths.get(target.toString(),
                         source.getFileName().toString()));
@@ -203,7 +198,7 @@ public class Controller implements Initializable {
         Path target = currentSide == Side.LEFT ? Paths.get(labelRight.getText()) : Paths.get(labelLeft.getText());
         target = Paths.get(target.toString(), "\\");
 
-        if (currentLabel.toString() != target.toString()) {
+        if (!Objects.equals(currentLabel.toString(), target.toString())) {
             try {
                 FileSystemUtils.copyRecursively(source, Paths.get(target.toString(),
                         source.getFileName().toString()));

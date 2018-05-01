@@ -1,4 +1,4 @@
-package sample;
+package pl.edu.utp.ar.filemanager;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,26 +11,16 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        Parent root = FXMLLoader.load(getClass().getResource("appGUI.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("App.fxml"));
 
         primaryStage.setTitle("My File Manager FX");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
 
-
-
-
-
     }
 
 
     public static void main(String[] args) {
-
-        // TESTS
-
-
-
-        // TESTS END
 
         launch(args);
 

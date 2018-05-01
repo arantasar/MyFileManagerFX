@@ -13,14 +13,15 @@ import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class ViewController implements ViewOperations {
 
     private Side currentSide = Side.NULL;
 
-    private ObservableList<String> observableLeft = FXCollections.observableArrayList();
+    private final ObservableList<String> observableLeft = FXCollections.observableArrayList();
 
-    private ObservableList<String> observableRight = FXCollections.observableArrayList();
+    private final ObservableList<String> observableRight = FXCollections.observableArrayList();
 
     @FXML
     private ListView<String> listLeft;
@@ -59,9 +60,9 @@ public class ViewController implements ViewOperations {
         if (selected != null) {
 
             Path path = Paths.get(labelLeft.getText(), "/", selected);
-            if (mouseEvent.getClickCount() == 2 && Files.isDirectory(path) && selected != "..") {
+            if (mouseEvent.getClickCount() == 2 && Files.isDirectory(path) && !Objects.equals(selected, "..")) {
                 showDir(path.toString());
-            } else if (mouseEvent.getClickCount() == 2 && selected == "..") {
+            } else if (mouseEvent.getClickCount() == 2 && Objects.equals(selected, "..")) {
                 showDir(path.getParent().getParent().toString());
             }
         }
@@ -78,9 +79,9 @@ public class ViewController implements ViewOperations {
 
             Path path = Paths.get(labelRight.getText(), "/", selected);
 
-            if (mouseEvent.getClickCount() == 2 && Files.isDirectory(path) && selected != "..") {
+            if (mouseEvent.getClickCount() == 2 && Files.isDirectory(path) && !Objects.equals(selected, "..")) {
                 showDir(path.toString());
-            } else if (mouseEvent.getClickCount() == 2 && selected == "..") {
+            } else if (mouseEvent.getClickCount() == 2 && Objects.equals(selected, "..")) {
                 showDir(path.getParent().getParent().toString());
             }
         }

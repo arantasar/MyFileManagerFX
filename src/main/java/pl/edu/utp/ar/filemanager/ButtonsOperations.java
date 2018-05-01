@@ -2,7 +2,7 @@ package pl.edu.utp.ar.filemanager;
 
 import javafx.event.ActionEvent;
 
-public interface ButtonsOperations {
+interface ButtonsOperations {
 
     void move(ActionEvent actionEvent);
 

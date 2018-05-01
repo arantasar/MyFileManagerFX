@@ -2,7 +2,7 @@ package pl.edu.utp.ar.filemanager;
 
 import javafx.scene.input.MouseEvent;
 
-public interface ViewOperations {
+interface ViewOperations {
 
     void initialSetup();
     void showDir(String path);

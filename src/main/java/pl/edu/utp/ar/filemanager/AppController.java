@@ -13,6 +13,7 @@ import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -104,17 +105,17 @@ public class AppController implements Initializable, ButtonsOperations {
 
         if (viewController.getCurrentSide() == Side.LEFT) {
             selectedItem = viewController.getListLeft().getSelectionModel().getSelectedItem();
-            selectedPath = viewController.getLabelLeft().getText() == "C:\\" ?
+            selectedPath = Objects.equals(viewController.getLabelLeft().getText(), "C:\\") ?
                     viewController.getLabelLeft().getText() + selectedItem :
                     viewController.getLabelLeft().getText() + "\\" + selectedItem;
         } else {
             selectedItem = viewController.getListRight().getSelectionModel().getSelectedItem();
-            selectedPath = viewController.getLabelRight().getText() == "C:\\" ?
+            selectedPath = Objects.equals(viewController.getLabelRight().getText(), "C:\\") ?
                     viewController.getLabelRight().getText() + selectedItem :
                     viewController.getLabelRight().getText() + "\\" + selectedItem;
         }
 
-        if (selectedItem != "..") {
+        if (!Objects.equals(selectedItem, "..")) {
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText(null);
